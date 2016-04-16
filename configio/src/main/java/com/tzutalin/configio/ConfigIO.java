@@ -1,9 +1,27 @@
+/*
+*  Copyright (C) 2016 TzuTaLin
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+
 package com.tzutalin.configio;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -12,31 +30,56 @@ import java.util.Set;
  */
 
 /**
- *
  * A class to read and write configuration to the specified path like external storage
- *
  */
-public class ConfigIO {
-    private Context mContext;
-    private Writer mWriter;
-    private String mTargetPath;
+public abstract class ConfigIO {
 
-    private ConfigIO() {
+    private static final String TAG = ConfigIO.class.getSimpleName();
+    protected final Map<String, Object> mMap = new HashMap<>();
+    protected Context mContext;
+    protected String mTargetPath;
 
-    }
+    public static final Object NULL = new Object() {
+        @Override
+        public boolean equals(Object o) {
+            return o == this || o == null; // API specifies this broken equals implementation
+        }
 
-    public ConfigIO(Context context) {
-        mContext = context;
-    }
-    
+        @Override
+        public String toString() {
+            return "null";
+        }
+    };
+
+    /**
+     * Generate ConfigIO object
+     *
+     * @param context
+     * @param path
+     * @return
+     */
     @NonNull
-    public void init(@NonNull String path) {
+    public static ConfigIO newInstance(@NonNull Context context, @NonNull String path) {
+        if (path.endsWith(".json")) {
+            ConfigIO configer = new JsonConfig(path);
+            return configer;
+        } else if (path.endsWith(".xml")) {
+            //mWriter = new WriterXmlImpl(mMap);
+        }
+        return null;
+    }
+
+    protected ConfigIO() {
+        // Cannot be used
+    }
+
+    protected ConfigIO(String path) {
         mTargetPath = path;
     }
 
-    public Writer getWriter() {
-        return mWriter;
-    }
+    public abstract boolean loadFromFile();
+
+    public abstract Writer getWriter();
 
     public interface Writer {
         /**
@@ -206,7 +249,7 @@ public class ConfigIO {
      * @throws NullPointerException
      */
     public Map<String, ?> getAll() {
-        return null;
+        return mMap;
     }
 
     /**
@@ -221,7 +264,8 @@ public class ConfigIO {
      */
     @Nullable
     public String getString(String key, @Nullable String defValue) {
-        return null;
+        Object obj = mMap.get(key);
+        return (String) obj;
     }
 
     /**
@@ -240,7 +284,8 @@ public class ConfigIO {
      */
     @Nullable
     public Set<String> getStringSet(String key, @Nullable Set<String> defValues) {
-        return null;
+        Object obj = mMap.get(key);
+        return (Set<String>) obj;
     }
 
     /**
@@ -254,7 +299,8 @@ public class ConfigIO {
      * @throws ClassCastException
      */
     public int getInt(String key, int defValue) {
-        return 1;
+        Object obj = mMap.get(key);
+        return (int) obj;
     }
 
     /**
@@ -268,7 +314,8 @@ public class ConfigIO {
      * @throws ClassCastException
      */
     public long getLong(String key, long defValue) {
-        return 1;
+        Object obj = mMap.get(key);
+        return (long) obj;
     }
 
     /**
@@ -282,7 +329,8 @@ public class ConfigIO {
      * @throws ClassCastException
      */
     public float getFloat(String key, float defValue) {
-        return 1;
+        Object obj = mMap.get(key);
+        return (float) obj;
     }
 
     /**
@@ -296,7 +344,8 @@ public class ConfigIO {
      * @throws ClassCastException
      */
     public boolean getBoolean(String key, boolean defValue) {
-        return true;
+        Object obj = mMap.get(key);
+        return (boolean) obj;
     }
 
     /**
@@ -307,7 +356,21 @@ public class ConfigIO {
      * otherwise false.
      */
     public boolean contains(String key) {
-        return true;
+        return mMap.containsKey(key);
+    }
+
+    /**
+     * Dump pretty log for map
+     */
+    protected void dumpMap() {
+        if (BuildConfig.DEBUG == false) {
+            return;
+        }
+
+        for (String key : mMap.keySet()) {
+            Log.d(TAG, "key: " + key);
+            Log.d(TAG, "value " + mMap.get(key));
+        }
     }
 
 }

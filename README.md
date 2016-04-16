@@ -1,22 +1,30 @@
 # Android-ConfigIO
 
-Not done
+### Features
+
+* Read/Write configruation with json format
+* Read/Write configuration with xml format. (Not done)
 
 ### Usage
 ```java
         File sdcard = Environment.getExternalStorageDirectory();
         String targetPath = sdcard.getAbsolutePath() + File.separator + "config.json";
 
-        ConfigIO configIO = new ConfigIO(getApplicationContext());
-        configIO.init(targetPath);
+        ConfigIO configIO = ConfigIO.newInstance(getApplicationContext(), targetPath);
 
         // Write
         ConfigIO.Writer writer = configIO.getWriter();
         writer.putString("test", "123");
         writer.putBoolean("test2", true);
 
+        // Blocking method
+        writer.commit();
+        // writer.apply() will save file async
+        // writer.apply();
         // Read
 
+        // It will load config from the file
+        configIO.loadFromFile();
         String test_str = configIO.getString("test", "default_str");
         boolean test_bool = configIO.getBoolean("test2", false);
 ```
