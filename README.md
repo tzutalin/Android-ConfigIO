@@ -29,6 +29,12 @@
         boolean test_bool = configIO.getBoolean("test2", false);
 ```
 
+If you would like to read and write in external storage:
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
 
 ### LICNESE
 Copyright 2016 Tzutalin
