@@ -10,7 +10,7 @@
         File sdcard = Environment.getExternalStorageDirectory();
         String targetPath = sdcard.getAbsolutePath() + File.separator + "config.json";
 
-        ConfigIO configIO = ConfigIO.newInstance(getApplicationContext(), targetPath);
+        ConfigIO configIO = ConfigIO.newInstance(targetPath);
 
         // Write
         ConfigIO.Writer writer = configIO.getWriter();

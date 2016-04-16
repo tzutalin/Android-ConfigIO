@@ -35,7 +35,8 @@ import java.util.Set;
 public abstract class ConfigIO {
 
     private static final String TAG = ConfigIO.class.getSimpleName();
-    protected final Map<String, Object> mMap = new HashMap<>();
+    protected Map<String, Object> mMap = new HashMap<>();
+
     protected Context mContext;
     protected String mTargetPath;
 
@@ -54,19 +55,20 @@ public abstract class ConfigIO {
     /**
      * Generate ConfigIO object
      *
-     * @param context
-     * @param path
-     * @return
+     * @param path write / read path
+     * @return ConfigIO instance
      */
     @NonNull
-    public static ConfigIO newInstance(@NonNull Context context, @NonNull String path) {
+    public static ConfigIO newInstance(@NonNull String path) {
+        ConfigIO configer = null;
         if (path.endsWith(".json")) {
-            ConfigIO configer = new JsonConfig(path);
-            return configer;
+            configer = new JsonConfig(path);
         } else if (path.endsWith(".xml")) {
-            //mWriter = new WriterXmlImpl(mMap);
+            configer = new XmlConfig(path);
+        } else {
+            throw new IllegalArgumentException("The file format is not supported");
         }
-        return null;
+        return configer;
     }
 
     protected ConfigIO() {
@@ -265,6 +267,9 @@ public abstract class ConfigIO {
     @Nullable
     public String getString(String key, @Nullable String defValue) {
         Object obj = mMap.get(key);
+        if (obj == null) {
+            return  defValue;
+        }
         return (String) obj;
     }
 
@@ -285,6 +290,9 @@ public abstract class ConfigIO {
     @Nullable
     public Set<String> getStringSet(String key, @Nullable Set<String> defValues) {
         Object obj = mMap.get(key);
+        if (obj == null) {
+            return  defValues;
+        }
         return (Set<String>) obj;
     }
 
@@ -300,6 +308,9 @@ public abstract class ConfigIO {
      */
     public int getInt(String key, int defValue) {
         Object obj = mMap.get(key);
+        if (obj == null) {
+            return  defValue;
+        }
         return (int) obj;
     }
 
@@ -315,6 +326,9 @@ public abstract class ConfigIO {
      */
     public long getLong(String key, long defValue) {
         Object obj = mMap.get(key);
+        if (obj == null) {
+            return  defValue;
+        }
         return (long) obj;
     }
 
@@ -330,6 +344,9 @@ public abstract class ConfigIO {
      */
     public float getFloat(String key, float defValue) {
         Object obj = mMap.get(key);
+        if (obj == null) {
+            return  defValue;
+        }
         return (float) obj;
     }
 
@@ -345,6 +362,9 @@ public abstract class ConfigIO {
      */
     public boolean getBoolean(String key, boolean defValue) {
         Object obj = mMap.get(key);
+        if (obj == null) {
+            return  defValue;
+        }
         return (boolean) obj;
     }
 

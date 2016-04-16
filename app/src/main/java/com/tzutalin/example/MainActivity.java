@@ -25,6 +25,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
 import com.tzutalin.configio.ConfigIO;
 
@@ -62,23 +63,26 @@ public class MainActivity extends AppCompatActivity {
         File sdcard = Environment.getExternalStorageDirectory();
         String targetPath = sdcard.getAbsolutePath() + File.separator + "config.json";
 
-        ConfigIO configIO = ConfigIO.newInstance(getApplicationContext(), targetPath);
+        ConfigIO configIO = ConfigIO.newInstance(targetPath);
+
 
         // Write
         ConfigIO.Writer writer = configIO.getWriter();
-        writer.putString("test", "123");
+        writer.putString("test", "12345678");
         writer.putBoolean("test2", true);
 
         // Blocking method
         writer.commit();
         // writer.apply() will save file async
-        // writer.apply();
-        // Read
+        //writer.apply();
 
+        // Read
         // It will load config from the file
         configIO.loadFromFile();
         String test_str = configIO.getString("test", "default_str");
         boolean test_bool = configIO.getBoolean("test2", false);
+
+        Toast.makeText(getApplicationContext(), "test_str" + test_str, Toast.LENGTH_LONG).show();
     }
 
     @Override

@@ -24,6 +24,10 @@ import java.util.Set;
  * Created by darrenl on 2016/4/16.
  */
 public class XmlConfig extends ConfigIO implements ConfigIO.Writer {
+    public XmlConfig(String path) {
+        super(path);
+    }
+
     @Override
     public boolean loadFromFile() {
         return false;

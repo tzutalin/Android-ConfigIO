@@ -30,6 +30,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +42,9 @@ import java.util.Set;
  */
 class JsonConfig extends ConfigIO implements ConfigIO.Writer {
     private static final String TAG = JsonConfig.class.getSimpleName();
+    private Set<String> mDeleteKeySet = new HashSet<>();
+    private boolean mbLoadToMemory = false;
+    private Thread mThread;
 
     private JsonConfig() {
         super();
@@ -59,8 +63,13 @@ class JsonConfig extends ConfigIO implements ConfigIO.Writer {
 
     @Override
     public boolean loadFromFile() {
+        // If it has loaed to memory, return true directly
+        if (mbLoadToMemory == true) {
+            return true;
+        }
+
         if (TextUtils.isEmpty(mTargetPath)) {
-            throw new IllegalAccessError("Empty file path ");
+            throw new IllegalAccessError("Empty file path");
         }
 
         try {
@@ -73,17 +82,18 @@ class JsonConfig extends ConfigIO implements ConfigIO.Writer {
             String response = new String(buffer);
             JSONObject jsonObj = new JSONObject(response);
             Map map = toMap(jsonObj);
-            mMap.putAll(map);
+            map.putAll(mMap);
+            mMap = map;
             // Print log
             dumpMap();
-            return true;
+            mbLoadToMemory = true;
         } catch (IOException e) {
             e.printStackTrace();
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        return false;
+        return mbLoadToMemory;
     }
 
     @Override
@@ -125,28 +135,47 @@ class JsonConfig extends ConfigIO implements ConfigIO.Writer {
     @Override
     public ConfigIO.Writer remove(String key) {
         mMap.remove(key);
+
+        // Add to delete set when the user didn't call loadFromFile first
+        if (mbLoadToMemory == false) {
+            mDeleteKeySet.add(key);
+        }
         return this;
     }
 
     @Override
     public ConfigIO.Writer clear() {
         mMap.clear();
+        if (mbLoadToMemory == false) {
+            mDeleteKeySet.addAll(mMap.keySet());
+        }
         return this;
     }
 
     @Override
     public boolean commit() {
-        if (mMap != null && mMap.size() != 0) {
-            JSONObject obj = new JSONObject(mMap);
-            return save(mTargetPath, obj.toString());
-        }
-        return false;
+        return save();
     }
 
     @Override
     public void apply() {
-        JSONObject obj = new JSONObject(mMap);
-        save(mTargetPath, obj.toString());
+        // TODO: Should be better
+        // Use only one thread to do it even call apply() many times
+        if (mThread == null) {
+            synchronized (JsonConfig.this) {
+                mThread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        save();
+
+                        synchronized (JsonConfig.this) {
+                            mThread = null;
+                        }
+                    }
+                });
+            }
+            mThread.start();
+        }
     }
 
     private Map<String, Object> jsonToMap(JSONObject json) throws JSONException {
@@ -190,16 +219,33 @@ class JsonConfig extends ConfigIO implements ConfigIO.Writer {
         return list;
     }
 
-    private boolean save(String path, String jsonStr) {
-        Log.d(TAG, "save : " + path + " json:" + jsonStr);
-        try {
-            FileWriter file = new FileWriter(path);
-            file.write(jsonStr);
-            file.flush();
-            file.close();
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
+    private boolean save() {
+        // If  the file exists, load it first
+        if (new File(mTargetPath).exists()) {
+            loadFromFile();
+        }
+
+        // Delete keys if the user removes keys but didn't call loadFromFile first
+        if (mMap != null && mMap.size() != 0 && mDeleteKeySet.size() != 0) {
+            for (String key : mDeleteKeySet) {
+                mMap.remove(key);
+            }
+        }
+
+        // Save to target path
+        if (mMap != null && mMap.size() != 0) {
+            JSONObject obj = new JSONObject(mMap);
+            String jsonStr = obj.toString();
+            Log.d(TAG, "save : " + mTargetPath + " json:" + jsonStr);
+            try {
+                FileWriter file = new FileWriter(mTargetPath);
+                file.write(jsonStr);
+                file.flush();
+                file.close();
+                return true;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return false;
     }
