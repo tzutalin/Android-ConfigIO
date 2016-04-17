@@ -16,6 +16,7 @@
 
 package com.tzutalin.configio;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
@@ -40,6 +41,10 @@ import java.util.Set;
  * Created by darrenl on 2016/4/15.
  * Package only
  */
+
+/**
+ * {@hide}
+ */
 class JsonConfig extends ConfigIO implements ConfigIO.Writer {
     private static final String TAG = JsonConfig.class.getSimpleName();
     private Set<String> mDeleteKeySet = new HashSet<>();
@@ -53,13 +58,6 @@ class JsonConfig extends ConfigIO implements ConfigIO.Writer {
     public JsonConfig(String path) {
         super(path);
     }
-
-    @Override
-    public ConfigIO.Writer putString(String key, @Nullable String value) {
-        mMap.put(key, value);
-        return this;
-    }
-
 
     @Override
     public boolean loadFromFile() {
@@ -101,39 +99,45 @@ class JsonConfig extends ConfigIO implements ConfigIO.Writer {
         return this;
     }
 
-
     @Override
-    public ConfigIO.Writer putStringSet(String key, @Nullable Set<String> values) {
+    public ConfigIO.Writer putString(@NonNull String key, @Nullable String value) {
+        mMap.put(key, value);
+        return this;
+    }
+
+
+    //@Override
+    public ConfigIO.Writer putStringSet(@NonNull String key, @Nullable Set<String> values) {
         mMap.put(key, values);
         return this;
     }
 
     @Override
-    public ConfigIO.Writer putInt(String key, int value) {
+    public ConfigIO.Writer putInt(@NonNull String key, int value) {
         mMap.put(key, value);
         return this;
     }
 
     @Override
-    public ConfigIO.Writer putLong(String key, long value) {
+    public ConfigIO.Writer putLong(@NonNull String key, long value) {
         mMap.put(key, value);
         return this;
     }
 
     @Override
-    public ConfigIO.Writer putFloat(String key, float value) {
+    public ConfigIO.Writer putFloat(@NonNull String key, float value) {
         mMap.put(key, value);
         return this;
     }
 
     @Override
-    public ConfigIO.Writer putBoolean(String key, boolean value) {
+    public ConfigIO.Writer putBoolean(@NonNull String key, boolean value) {
         mMap.put(key, value);
         return this;
     }
 
     @Override
-    public ConfigIO.Writer remove(String key) {
+    public ConfigIO.Writer remove(@NonNull String key) {
         mMap.remove(key);
 
         // Add to delete set when the user didn't call loadFromFile first

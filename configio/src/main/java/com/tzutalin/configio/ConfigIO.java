@@ -79,10 +79,21 @@ public abstract class ConfigIO {
         mTargetPath = path;
     }
 
+    /**
+     * Load configuration from disk accoruding to the initial path
+     * @return true if it load the map from xml or json configuration file
+     */
     public abstract boolean loadFromFile();
 
+    /**
+     * Get the instance of writer
+     * @return Writer to add/delete/update key and value in map
+     */
     public abstract Writer getWriter();
 
+    /**
+     * The interface of writer object
+     */
     public interface Writer {
         /**
          * Set a String value in the configuration Writer, to be written back once
@@ -93,7 +104,7 @@ public abstract class ConfigIO {
          * @return Returns a reference to the same Writer object, so you can
          * chain put calls together.
          */
-        Writer putString(String key, @Nullable String value);
+        Writer putString(@NonNull String key, @Nullable String value);
 
         /**
          * Set a set of String values in the configuration Writer, to be written
@@ -106,7 +117,7 @@ public abstract class ConfigIO {
          * @return Returns a reference to the same Writer object, so you can
          * chain put calls together.
          */
-        Writer putStringSet(String key, @Nullable Set<String> values);
+        //Writer putStringSet(@NonNull String key, @Nullable Set<String> values);
 
         /**
          * Set an int value in the configuration Writer, to be written back once
@@ -117,7 +128,7 @@ public abstract class ConfigIO {
          * @return Returns a reference to the same Writer object, so you can
          * chain put calls together.
          */
-        Writer putInt(String key, int value);
+        Writer putInt(@NonNull String key, int value);
 
         /**
          * Set a long value in the configuration Writer, to be written back once
@@ -128,7 +139,7 @@ public abstract class ConfigIO {
          * @return Returns a reference to the same Writer object, so you can
          * chain put calls together.
          */
-        Writer putLong(String key, long value);
+        Writer putLong(@NonNull String key, long value);
 
         /**
          * Set a float value in the configuration Writer, to be written back once
@@ -139,7 +150,7 @@ public abstract class ConfigIO {
          * @return Returns a reference to the same Writer object, so you can
          * chain put calls together.
          */
-        Writer putFloat(String key, float value);
+        Writer putFloat(@NonNull String key, float value);
 
         /**
          * Set a boolean value in the configuration Writer, to be written back
@@ -150,7 +161,7 @@ public abstract class ConfigIO {
          * @return Returns a reference to the same Writer object, so you can
          * chain put calls together.
          */
-        Writer putBoolean(String key, boolean value);
+        Writer putBoolean(@NonNull String key, boolean value);
 
         /**
          * Mark in the Writer that a configuration value should be removed, which
@@ -165,7 +176,7 @@ public abstract class ConfigIO {
          * @return Returns a reference to the same Writer object, so you can
          * chain put calls together.
          */
-        Writer remove(String key);
+        Writer remove(@NonNull String key);
 
         /**
          * Mark in the Writer to remove <em>all</em> values from the
@@ -288,7 +299,7 @@ public abstract class ConfigIO {
      * @throws ClassCastException
      */
     @Nullable
-    public Set<String> getStringSet(String key, @Nullable Set<String> defValues) {
+    protected Set<String> getStringSet(String key, @Nullable Set<String> defValues) {
         Object obj = mMap.get(key);
         if (obj == null) {
             return  defValues;

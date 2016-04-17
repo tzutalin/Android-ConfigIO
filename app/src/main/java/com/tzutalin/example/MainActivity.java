@@ -25,7 +25,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.tzutalin.configio.ConfigIO;
 
@@ -41,10 +41,15 @@ public class MainActivity extends AppCompatActivity {
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
 
+    private TextView mJsonTestTextView;
+    private TextView mXmlTestTextView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mJsonTestTextView = (TextView) findViewById(R.id.text_view_jsontest);
+        mXmlTestTextView = (TextView) findViewById(R.id.text_view_xmltest);
 
         // Just use hugo to print log
         isExternalStorageWritable();
@@ -61,28 +66,81 @@ public class MainActivity extends AppCompatActivity {
     @DebugLog
     private void demo() {
         File sdcard = Environment.getExternalStorageDirectory();
-        String targetPath = sdcard.getAbsolutePath() + File.separator + "config.json";
 
-        ConfigIO configIO = ConfigIO.newInstance(targetPath);
+        // Save configure to json format, and retrieve it
+        {
+            String targetPath = sdcard.getAbsolutePath() + File.separator + "config.json";
+            ConfigIO configIO = ConfigIO.newInstance(targetPath);
 
+            // Write
+            ConfigIO.Writer writer = configIO.getWriter();
+            writer.putString("test_str", "12345678");
+            writer.putBoolean("test_bool", true);
+            writer.putInt("test_int", 10);
+            writer.putFloat("test_float", 0.5f);
+            writer.putLong("test_long", 100000000L);
 
-        // Write
-        ConfigIO.Writer writer = configIO.getWriter();
-        writer.putString("test", "12345678");
-        writer.putBoolean("test2", true);
+            // Blocking method
+            writer.commit();
+            // writer.apply() will save file async
+            //writer.apply();
 
-        // Blocking method
-        writer.commit();
-        // writer.apply() will save file async
-        //writer.apply();
+            // Read
+            // It will load config from the file
+            configIO.loadFromFile();
+            String test_str = configIO.getString("test_str", "default_str");
+            boolean test_bool = configIO.getBoolean("test_bool", false);
+            int test_int = configIO.getInt("test_int", 0);
+            float test_float = configIO.getFloat("test_float", 0);
+            long test_long = configIO.getLong("test_long", 0);
 
-        // Read
-        // It will load config from the file
-        configIO.loadFromFile();
-        String test_str = configIO.getString("test", "default_str");
-        boolean test_bool = configIO.getBoolean("test2", false);
+            StringBuilder sb = new StringBuilder();
+            sb.append("\njson config content:")
+                    .append("\ntest_string:").append(test_str)
+                    .append("\ntest_bool:").append(test_bool)
+                    .append("\ntest_int:").append(test_int)
+                    .append("\ntest_float:").append(test_float)
+                    .append("\ntest_long:").append(test_long);
+            mJsonTestTextView.setText(sb.toString());
+        }
 
-        Toast.makeText(getApplicationContext(), "test_str" + test_str, Toast.LENGTH_LONG).show();
+        // Save configuration to xml, and retrieve it
+        {
+            String targetPath = sdcard.getAbsolutePath() + File.separator + "config.json";
+            ConfigIO configIO = ConfigIO.newInstance(targetPath);
+
+            // Write
+            ConfigIO.Writer writer = configIO.getWriter();
+            writer.putString("test_str", "12345678");
+            writer.putBoolean("test_bool", true);
+            writer.putInt("test_int", 10);
+            writer.putFloat("test_float", 0.5f);
+            writer.putLong("test_long", 100000000L);
+
+            // Blocking method
+            writer.commit();
+            // writer.apply() will save file async
+            //writer.apply();
+
+            // Read
+            // It will load config from the file
+            configIO.loadFromFile();
+            String test_str = configIO.getString("test_str", "default_str");
+            boolean test_bool = configIO.getBoolean("test_bool", false);
+            int test_int = configIO.getInt("test_int", 0);
+            float test_float = configIO.getFloat("test_float", 0);
+            long test_long = configIO.getLong("test_long", 0);
+
+            StringBuilder sb = new StringBuilder();
+            sb.append("\nxml config content:")
+                    .append("\ntest_string:").append(test_str)
+                    .append("\ntest_bool:").append(test_bool)
+                    .append("\ntest_int:").append(test_int)
+                    .append("\ntest_float:").append(test_float)
+                    .append("\ntest_long:").append(test_long);
+            mXmlTestTextView.setText(sb.toString());
+        }
+
     }
 
     @Override

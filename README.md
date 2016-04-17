@@ -1,32 +1,60 @@
 # Android-ConfigIO
 
+A small library for creating, accessing, and modifying configuration file with Xml and Json format
+
 ### Features
 
 * Read/Write configruation with json format
-* Read/Write configuration with xml format. (Not done)
+
+* Read/Write configuration with xml format
+
+* Support Rxjava (Not done)
 
 ### Usage
 ```java
-        File sdcard = Environment.getExternalStorageDirectory();
-        String targetPath = sdcard.getAbsolutePath() + File.separator + "config.json";
+File sdcard = Environment.getExternalStorageDirectory();
+String targetPath = sdcard.getAbsolutePath() + File.separator + "config.json";
 
-        ConfigIO configIO = ConfigIO.newInstance(targetPath);
+ConfigIO configIO = ConfigIO.newInstance(targetPath);
+// === Write ===
+ConfigIO.Writer writer = configIO.getWriter();
+writer.putString("test_str", "12345678");
+writer.putBoolean("test_bool", true);
+writer.putInt("test_int", 10);
+writer.putFloat("test_float", 0.5f);
+writer.putLong("test_long", 100000000L);
+// Blocking method
+writer.commit();
+// writer.apply() will save file async
+//writer.apply();
 
-        // Write
-        ConfigIO.Writer writer = configIO.getWriter();
-        writer.putString("test", "123");
-        writer.putBoolean("test2", true);
+// === Read ====
+// It will load config from the file
+configIO.loadFromFile();
+String test_str = configIO.getString("test_str", "default_str");
+boolean test_bool = configIO.getBoolean("test_bool", false);
+int test_int = configIO.getInt("test_int", 0);
+float test_float = configIO.getFloat("test_float", 0);
+long test_long = configIO.getLong("test_long", 0);
 
-        // Blocking method
-        writer.commit();
-        // writer.apply() will save file async
-        // writer.apply();
-        // Read
+// It will load config from the file
+configIO.loadFromFile();
+String test_str = configIO.getString("test_str", "default_str");
+boolean test_bool = configIO.getBoolean("test_bool", false);
+float test_float = configIO.getFloat("test_float", 0);
+long test_long = configIO.getLong("test_long", 0);
 
-        // It will load config from the file
-        configIO.loadFromFile();
-        String test_str = configIO.getString("test", "default_str");
-        boolean test_bool = configIO.getBoolean("test2", false);
+```
+
+Save as /sdcard/config.json
+```json
+{
+   "test_str":"12345678",
+   "test_int":10,
+   "test_long":100000000,
+   "test_bool":true,
+   "test_float":0.5,
+}
 ```
 
 If you would like to read and write in external storage:
@@ -35,6 +63,10 @@ If you would like to read and write in external storage:
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
+### Binary
+```
+	compile 'com.tzutalin.configio:configio:1.0.1'
+```
 
 ### LICNESE
 Copyright 2016 Tzutalin
