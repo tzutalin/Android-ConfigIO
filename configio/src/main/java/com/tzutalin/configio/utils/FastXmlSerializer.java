@@ -34,7 +34,6 @@ import java.nio.charset.UnsupportedCharsetException;
 /**
  * Created by darrenl on 2016/4/17.
  */
-/** {@hide} */
 public class FastXmlSerializer implements XmlSerializer {
     private static final String ESCAPE_TABLE[] = new String[]{
             null, null, null, null, null, null, null, null,  // 0-7

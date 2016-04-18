@@ -65,7 +65,15 @@ If you would like to read and write in external storage:
 
 ### Binary
 ```
-	compile 'com.tzutalin.configio:configio:1.0.1'
+	repositories {
+		maven {
+			url 'https://dl.bintray.com/tzutalin/maven'
+		}
+	}
+
+	dependencies {
+		compile 'com.tzutalin.configio:configio:1.0.2'
+	}
 ```
 
 ### LICNESE

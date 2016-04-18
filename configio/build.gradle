@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'com.github.dcendents.android-maven'
 
-version = "1.0.1"
+version = "1.0.2"
 
 android {
     compileSdkVersion 23
@@ -12,7 +12,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 23
         versionCode 1
-        versionName "1.0.1"
+        versionName "1.0.2"
     }
     buildTypes {
         release {
@@ -22,10 +22,15 @@ android {
     }
 }
 
+configurations {
+    javadocDeps
+}
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
     compile "com.android.support:support-annotations:${rootProject.ext.androidSupportSdkVersion}"
+    javadocDeps "com.android.support:support-annotations:${rootProject.ext.androidSupportSdkVersion}"
     compile 'io.reactivex:rxjava:1.1.0'
 }
 
@@ -79,6 +84,8 @@ task generateJavadocs(type: Javadoc) {
     source = android.sourceSets.main.java.srcDirs
     classpath += project.files(android.getBootClasspath()
             .join(File.pathSeparator))
+
+    classpath += configurations.javadocDeps
 }
 
 task generateJavadocsJar(type: Jar) {
@@ -104,10 +111,10 @@ bintray {
         repo = "maven"
         name = "Android-ConfigIO"
         version {
-            name = '1.0.1'
-            desc = 'First upload'
+            name = '1.0.2'
+            desc = 'Support Xml and Json'
             released  = new Date()
-            vcsTag = '1.0.1'
+            vcsTag = '1.0.2'
         }
 
         websiteUrl = siteUrl
