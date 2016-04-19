@@ -109,27 +109,27 @@ artifacts {
 Properties properties = new Properties()
 if(project.rootProject.file('local.properties').isFile()) {
     properties.load(project.rootProject.file('local.properties').newDataInputStream())
-}
 
-bintray {
-    user = properties.getProperty("bintray.user")
-    key = properties.getProperty("bintray.apikey")
+    bintray {
+        user = properties.getProperty("bintray.user")
+        key = properties.getProperty("bintray.apikey")
 
-    configurations = ['archives']
-    pkg {
-        repo = "maven"
-        name = "Android-ConfigIO"
-        version {
-            name = '1.0.2'
-            desc = 'Support Xml and Json'
-            released  = new Date()
-            vcsTag = '1.0.2'
+        configurations = ['archives']
+        pkg {
+            repo = "maven"
+            name = "Android-ConfigIO"
+            version {
+                name = '1.0.2'
+                desc = 'Support Xml and Json'
+                released  = new Date()
+                vcsTag = '1.0.2'
+            }
+
+            websiteUrl = siteUrl
+            vcsUrl = gitUrl
+            licenses = ["Apache-2.0"]
+            publish = true
         }
-
-        websiteUrl = siteUrl
-        vcsUrl = gitUrl
-        licenses = ["Apache-2.0"]
-        publish = true
+        configurations = ['archives']
     }
-    configurations = ['archives']
 }
