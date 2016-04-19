@@ -29,11 +29,13 @@ A small and encapsulation library for creating, accessing, and modifying configu
 
 ### Use in code
 
-If you would like to read and write in external storage:
+If you would like to read and write in external storage, you need to decalre permissions in Manifest:
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
+Sample
 
 ```java
 // Assign the target path
