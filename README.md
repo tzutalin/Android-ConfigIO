@@ -1,6 +1,8 @@
 # Android-ConfigIO
 
-A small library for creating, accessing, and modifying configuration file with Xml and Json format
+A small and encapsulation library for creating, accessing, and modifying configuration file with Xml and Json format
+
+[ ![Download](https://api.bintray.com/packages/tzutalin/maven/Android-ConfigIO/images/download.svg) ](https://bintray.com/tzutalin/maven/Android-ConfigIO/_latestVersion)
 
 ### Features
 
@@ -8,11 +10,34 @@ A small library for creating, accessing, and modifying configuration file with X
 
 * Read/Write configuration with xml format
 
-* Support Rxjava (Not done)
+* Rx support
 
-### Usage
+## Usage
+
+### Binary / Import to your build.gradle
+```
+	repositories {
+		maven {
+			url 'https://dl.bintray.com/tzutalin/maven'
+		}
+	}
+
+	dependencies {
+		compile 'com.tzutalin.configio:configio:1.0.2'
+	}
+```
+
+### Use in code
+
+If you would like to read and write in external storage:
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    
 ```java
 File sdcard = Environment.getExternalStorageDirectory();
+// It also suppor Xml extension
 String targetPath = sdcard.getAbsolutePath() + File.separator + "config.json";
 
 ConfigIO configIO = ConfigIO.newInstance(targetPath);
@@ -23,10 +48,8 @@ writer.putBoolean("test_bool", true);
 writer.putInt("test_int", 10);
 writer.putFloat("test_float", 0.5f);
 writer.putLong("test_long", 100000000L);
-// Blocking method
+// Blocking method. You can use apply() to save it async
 writer.commit();
-// writer.apply() will save file async
-//writer.apply();
 
 // === Read ====
 // It will load config from the file
@@ -36,14 +59,6 @@ boolean test_bool = configIO.getBoolean("test_bool", false);
 int test_int = configIO.getInt("test_int", 0);
 float test_float = configIO.getFloat("test_float", 0);
 long test_long = configIO.getLong("test_long", 0);
-
-// It will load config from the file
-configIO.loadFromFile();
-String test_str = configIO.getString("test_str", "default_str");
-boolean test_bool = configIO.getBoolean("test_bool", false);
-float test_float = configIO.getFloat("test_float", 0);
-long test_long = configIO.getLong("test_long", 0);
-
 ```
 
 Save as /sdcard/config.json
@@ -57,26 +72,27 @@ Save as /sdcard/config.json
 }
 ```
 
-If you would like to read and write in external storage:
-
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-
-### Binary
+Rx support
 ```
-	repositories {
-		maven {
-			url 'https://dl.bintray.com/tzutalin/maven'
-		}
-	}
+String targetPath = sdcard.getAbsolutePath() + File.separator + "config.xml";
+final ConfigIO configIO = ConfigIO.newInstance(targetPath);
+// Using RxJava to subscribe on io thread
+configIO.loadFromFileWithRx().subscribeOn(Schedulers.io()).subscribe(new Action1<Boolean>() {
+    @Override
+    public void call(Boolean isSuccess) {
+         String test_str = configIO.getString("test_str", "default_str");
+         boolean test_bool = configIO.getBoolean("test_bool", false);
+         int test_int = configIO.getInt("test_int", 0);
+         float test_float = configIO.getFloat("test_float", 0);
+         long test_long = configIO.getLong("test_long", 0);
+    }
+ });
 
-	dependencies {
-		compile 'com.tzutalin.configio:configio:1.0.2'
-	}
 ```
 
-### LICNESE
+For more example, you can check the [sample code](https://github.com/tzutalin/Android-ConfigIO/blob/master/app/src/main/java/com/tzutalin/example/MainActivity.java#L67)
+
+## LICNESE
 Copyright 2016 Tzutalin
 
 Licensed under the Apache License, Version 2.0 (the "License");

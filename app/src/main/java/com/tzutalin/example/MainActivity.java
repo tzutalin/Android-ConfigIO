@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Save configuration to xml, and retrieve it
         {
-            String targetPath = sdcard.getAbsolutePath() + File.separator + "config.json";
+            String targetPath = sdcard.getAbsolutePath() + File.separator + "config.xml";
             ConfigIO configIO = ConfigIO.newInstance(targetPath);
 
             // Write

@@ -19,11 +19,16 @@ package com.tzutalin.configio;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import rx.Single;
+import rx.SingleSubscriber;
 
 /**
  * Created by darrenl on 2016/4/15.
@@ -84,6 +89,34 @@ public abstract class ConfigIO {
      * @return true if it load the map from xml or json configuration file
      */
     public abstract boolean loadFromFile();
+
+    /**
+     * Load configuration from disk with RxJava interface. It can be easier scheduled on IO thread
+     * @return RxJava's single operator
+     */
+    public Single<Boolean> loadFromFileWithRx() {
+        if (!TextUtils.isEmpty(mTargetPath) && new File(mTargetPath).exists()) {
+            return Single.create(new Single.OnSubscribe<Boolean>() {
+                @Override
+                public void call(final SingleSubscriber<? super Boolean> singleSubscriber) {
+                    try {
+                        boolean isLoad = loadFromFile();
+                        if (isLoad) {
+                            singleSubscriber.onSuccess(true);
+                        } else {
+                            singleSubscriber.onSuccess(false);
+                        }
+                    } catch (Exception e) {
+                        Log.w(TAG, " loadFromFileWithRx's exception " + e.getMessage());
+                        singleSubscriber.onError(e);
+                    }
+                }
+            });
+
+        } else {
+            return Single.error(new IllegalArgumentException(String.format("Cannot find %s", mTargetPath)));
+        }
+    }
 
     /**
      * Get the instance of writer
