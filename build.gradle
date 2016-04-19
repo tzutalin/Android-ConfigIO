@@ -29,7 +29,7 @@ ext {
     artifactDescription = 'A Library to read and write xml/json configuration, with part Rx support'
     artifactLabels = ['rx', 'android', 'configuration']
     releaseVersionCode = 1
-    releaseVersionName = '0.5.0'
+    releaseVersionName = '1.0.2'
 
     androidCompileSdkVersion = 'Google Inc.:Google APIs:23'
     androidBuildToolsVersion = '23.0.2'
