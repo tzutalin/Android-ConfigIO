@@ -1,5 +1,7 @@
 # Android-ConfigIO
 
+[![Build Status](https://travis-ci.org/tzutalin/Android-ConfigIO.png)](https://travis-ci.org/tzutalin/Android-ConfigIO)
+
 A small and encapsulation library for creating, accessing, and modifying configuration file with Xml and Json format
 
 [ ![Download](https://api.bintray.com/packages/tzutalin/maven/Android-ConfigIO/images/download.svg) ](https://bintray.com/tzutalin/maven/Android-ConfigIO/_latestVersion)

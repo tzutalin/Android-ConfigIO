@@ -32,7 +32,7 @@ ext {
     releaseVersionName = '1.0.2'
 
     androidCompileSdkVersion = 'Google Inc.:Google APIs:23'
-    androidBuildToolsVersion = '23.0.2'
+    androidBuildToolsVersion = '23.0.3'
     androidSupportSdkVersion = '23.3.0'
     minSdkVersion = 14
     targetSdkVersion = 23
