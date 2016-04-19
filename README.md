@@ -34,12 +34,13 @@ If you would like to read and write in external storage:
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    
+
 ```java
+// Assign the target path
 File sdcard = Environment.getExternalStorageDirectory();
-// It also suppor Xml extension
 String targetPath = sdcard.getAbsolutePath() + File.separator + "config.json";
 
+// Instantiate ConfigIO
 ConfigIO configIO = ConfigIO.newInstance(targetPath);
 // === Write ===
 ConfigIO.Writer writer = configIO.getWriter();
@@ -48,7 +49,7 @@ writer.putBoolean("test_bool", true);
 writer.putInt("test_int", 10);
 writer.putFloat("test_float", 0.5f);
 writer.putLong("test_long", 100000000L);
-// Blocking method. You can use apply() to save it async
+// Blocking method. You can use writer.apply() to save it async
 writer.commit();
 
 // === Read ====
@@ -61,7 +62,7 @@ float test_float = configIO.getFloat("test_float", 0);
 long test_long = configIO.getLong("test_long", 0);
 ```
 
-Save as /sdcard/config.json
+Result: It will save to /sdcard/config.json
 ```json
 {
    "test_str":"12345678",
