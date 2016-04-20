@@ -74,11 +74,11 @@ public class MainActivity extends AppCompatActivity {
 
             // Write
             ConfigIO.Writer writer = configIO.getWriter();
-            writer.putString("test_str", "12345678");
-            writer.putBoolean("test_bool", true);
-            writer.putInt("test_int", 10);
-            writer.putFloat("test_float", 0.5f);
-            writer.putLong("test_long", 100000000L);
+            writer.putString("test_str", "12345678")
+                    .putBoolean("test_bool", true)
+                    .putInt("test_int", 10)
+                    .putFloat("test_float", 0.5f)
+                    .putLong("test_long", 100000000L);
 
             // Blocking method
             writer.commit();

@@ -86,12 +86,14 @@ public abstract class ConfigIO {
 
     /**
      * Load configuration from disk accoruding to the initial path
+     *
      * @return true if it load the map from xml or json configuration file
      */
     public abstract boolean loadFromFile();
 
     /**
      * Load configuration from disk with RxJava interface. It can be easier scheduled on IO thread
+     *
      * @return RxJava's single operator
      */
     public Single<Boolean> loadFromFileWithRx() {
@@ -120,9 +122,29 @@ public abstract class ConfigIO {
 
     /**
      * Get the instance of writer
+     *
      * @return Writer to add/delete/update key and value in map
      */
     public abstract Writer getWriter();
+
+    /**
+     * Get the instance of writer with RxJava's single operator
+     *
+     * @return Writer with RxJava's single operator
+     */
+    public Single<Writer> getWriterWithRx() {
+        if (!TextUtils.isEmpty(mTargetPath)) {
+            return Single.create(new Single.OnSubscribe<Writer>() {
+                @Override
+                public void call(final SingleSubscriber<? super Writer> singleSubscriber) {
+                    singleSubscriber.onSuccess(getWriter());
+                }
+            });
+
+        } else {
+            return Single.error(new IllegalArgumentException("path is null"));
+        }
+    }
 
     /**
      * The interface of writer object
@@ -200,7 +222,7 @@ public abstract class ConfigIO {
          * Mark in the Writer that a configuration value should be removed, which
          * will be done in the actual configuration once {@link #commit} is
          * called.
-         *
+         * <p/>
          * Note that when committing back to the configuration, all removals
          * are done first, regardless of whether you called remove before
          * or after put methods on this Writer.
@@ -243,7 +265,7 @@ public abstract class ConfigIO {
          * {@link ConfigIO} object it is editing.  This atomically
          * performs the requested modifications, replacing whatever is currently
          * in the ConfigIO.
-         *
+         * <p/>
          * {@link #commit} from <code>apply()</code>.
          */
         void apply();
@@ -252,7 +274,7 @@ public abstract class ConfigIO {
 
     /**
      * Retrieve all values from the Config File.
-     *
+     * <p/>
      * Note that you <em>must not</em> modify the collection returned
      * by this method, or alter any of its contents.  The consistency of your
      * stored data is not guaranteed if you do.
@@ -279,14 +301,14 @@ public abstract class ConfigIO {
     public String getString(String key, @Nullable String defValue) {
         Object obj = mMap.get(key);
         if (obj == null) {
-            return  defValue;
+            return defValue;
         }
         return (String) obj;
     }
 
     /**
      * Retrieve a set of String values from the Config File.
-     *
+     * <p/>
      * Not test yet
      *
      * @param key       The name of the map to retrieve.
@@ -300,7 +322,7 @@ public abstract class ConfigIO {
     protected Set<String> getStringSet(String key, @Nullable Set<String> defValues) {
         Object obj = mMap.get(key);
         if (obj == null) {
-            return  defValues;
+            return defValues;
         }
         return (Set<String>) obj;
     }
@@ -318,7 +340,7 @@ public abstract class ConfigIO {
     public int getInt(String key, int defValue) {
         Object obj = mMap.get(key);
         if (obj == null) {
-            return  defValue;
+            return defValue;
         }
         return (int) obj;
     }
@@ -336,7 +358,7 @@ public abstract class ConfigIO {
     public long getLong(String key, long defValue) {
         Object obj = mMap.get(key);
         if (obj == null) {
-            return  defValue;
+            return defValue;
         }
         return (long) obj;
     }
@@ -354,7 +376,7 @@ public abstract class ConfigIO {
     public float getFloat(String key, float defValue) {
         Object obj = mMap.get(key);
         if (obj == null) {
-            return  defValue;
+            return defValue;
         }
         return (float) obj;
     }
@@ -372,7 +394,7 @@ public abstract class ConfigIO {
     public boolean getBoolean(String key, boolean defValue) {
         Object obj = mMap.get(key);
         if (obj == null) {
-            return  defValue;
+            return defValue;
         }
         return (boolean) obj;
     }

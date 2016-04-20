@@ -1,9 +1,8 @@
 # Android-ConfigIO
 
-[![Build Status](https://travis-ci.org/tzutalin/Android-ConfigIO.png)](https://travis-ci.org/tzutalin/Android-ConfigIO)
-
 A small and encapsulation library for creating, accessing, and modifying configuration file with Xml and Json format
 
+[![Build Status](https://travis-ci.org/tzutalin/Android-ConfigIO.png)](https://travis-ci.org/tzutalin/Android-ConfigIO)
 [ ![Download](https://api.bintray.com/packages/tzutalin/maven/Android-ConfigIO/images/download.svg) ](https://bintray.com/tzutalin/maven/Android-ConfigIO/_latestVersion)
 
 ### Features
@@ -25,7 +24,7 @@ A small and encapsulation library for creating, accessing, and modifying configu
 	}
 
 	dependencies {
-		compile 'com.tzutalin.configio:configio:1.0.2'
+		compile 'com.tzutalin.configio:configio:1.0.3'
 	}
 ```
 
@@ -48,11 +47,11 @@ String targetPath = sdcard.getAbsolutePath() + File.separator + "config.json";
 ConfigIO configIO = ConfigIO.newInstance(targetPath);
 // === Write ===
 ConfigIO.Writer writer = configIO.getWriter();
-writer.putString("test_str", "12345678");
-writer.putBoolean("test_bool", true);
-writer.putInt("test_int", 10);
-writer.putFloat("test_float", 0.5f);
-writer.putLong("test_long", 100000000L);
+writer.putString("test_str", "12345678")
+      .putBoolean("test_bool", true)
+      .putInt("test_int", 10)
+      .putFloat("test_float", 0.5f)
+      .putLong("test_long", 100000000L);
 // Blocking method. You can use writer.apply() to save it async
 writer.commit();
 
