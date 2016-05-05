@@ -72,30 +72,30 @@ class XmlConfig extends ConfigIO implements ConfigIO.Writer {
             throw new IllegalAccessError("Empty file path");
         }
 
-
-        File file = new File(mTargetPath);
-        if (file.canRead()) {
-            BufferedInputStream str = null;
-            try {
-                str = new BufferedInputStream(
-                        new FileInputStream(file), 16 * 1024);
-                Map map = readMapXml(str);
-                map.putAll(mMap);
-                mMap = map;
-                // Print log
-                dumpMap();
-                mbLoadToMemory = true;
-            } catch (XmlPullParserException e) {
-                Log.w(TAG, "getSharedPreferences", e);
-            } catch (FileNotFoundException e) {
-                Log.w(TAG, "getSharedPreferences", e);
-            } catch (IOException e) {
-                Log.w(TAG, "getSharedPreferences", e);
-            } finally {
+        if (new File(mTargetPath).exists()) {
+            File file = new File(mTargetPath);
+            if (file.canRead()) {
+                BufferedInputStream str = null;
                 try {
-                    str.close();
+                    str = new BufferedInputStream(  new FileInputStream(file), 16 * 1024);
+                    Map map = readMapXml(str);
+                    map.putAll(mMap);
+                    mMap = map;
+                    // Print log
+                    dumpMap();
+                    mbLoadToMemory = true;
+                } catch (XmlPullParserException e) {
+                    Log.w(TAG, "getSharedPreferences", e);
+                } catch (FileNotFoundException e) {
+                    Log.w(TAG, "getSharedPreferences", e);
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Log.w(TAG, "getSharedPreferences", e);
+                } finally {
+                    try {
+                        str.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }

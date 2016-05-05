@@ -70,25 +70,27 @@ class JsonConfig extends ConfigIO implements ConfigIO.Writer {
             throw new IllegalAccessError("Empty file path");
         }
 
-        try {
-            File f = new File(mTargetPath);
-            FileInputStream is = new FileInputStream(f);
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            String response = new String(buffer);
-            JSONObject jsonObj = new JSONObject(response);
-            Map map = toMap(jsonObj);
-            map.putAll(mMap);
-            mMap = map;
-            // Print log
-            dumpMap();
-            mbLoadToMemory = true;
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
+        if (new File(mTargetPath).exists()) {
+            try {
+                File f = new File(mTargetPath);
+                FileInputStream is = new FileInputStream(f);
+                int size = is.available();
+                byte[] buffer = new byte[size];
+                is.read(buffer);
+                is.close();
+                String response = new String(buffer);
+                JSONObject jsonObj = new JSONObject(response);
+                Map map = toMap(jsonObj);
+                map.putAll(mMap);
+                mMap = map;
+                // Print log
+                dumpMap();
+                mbLoadToMemory = true;
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
 
         return mbLoadToMemory;
