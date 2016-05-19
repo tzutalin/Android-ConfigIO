@@ -140,6 +140,12 @@ class XmlConfig extends ConfigIO implements ConfigIO.Writer {
     }
 
     @Override
+    public ConfigIO.Writer putDouble(@NonNull String key, double value) {
+        mMap.put(key, value);
+        return this;
+    }
+
+    @Override
     public ConfigIO.Writer putBoolean(@NonNull String key, boolean value) {
         mMap.put(key, value);
         return this;

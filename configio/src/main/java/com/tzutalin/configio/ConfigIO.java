@@ -208,6 +208,17 @@ public abstract class ConfigIO {
         Writer putFloat(@NonNull String key, float value);
 
         /**
+         * Set a double value in the configuration Writer, to be written back once
+         * {@link #commit} or {@link #apply} are called.
+         *
+         * @param key   The name of the configuration to modify.
+         * @param value The new value for the configuration.
+         * @return Returns a reference to the same Writer object, so you can
+         * chain put calls together.
+         */
+        Writer putDouble(@NonNull String key, double value);
+
+        /**
          * Set a boolean value in the configuration Writer, to be written back
          * once {@link #commit} or {@link #apply} are called.
          *
@@ -379,6 +390,24 @@ public abstract class ConfigIO {
             return defValue;
         }
         return (float) obj;
+    }
+
+    /**
+     * Retrieve a double value from the Config File.
+     *
+     * @param key      The name of the map to retrieve.
+     * @param defValue Value to return if this map does not exist.
+     * @return Returns the map value if it exists, or defValue.  Throws
+     * ClassCastException if there is a map with this name that is not
+     * a float.
+     * @throws ClassCastException
+     */
+    public double getDouble(String key, double defValue) {
+        Object obj = mMap.get(key);
+        if (obj == null) {
+            return defValue;
+        }
+        return (double) obj;
     }
 
     /**
